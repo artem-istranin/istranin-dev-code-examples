@@ -25,3 +25,21 @@ jobs:
         run: uv sync --locked
       - name: Run the tests
         run: uv run pytest test_main.py -v
+
+  langgraph-agent-testing:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: langgraph-agent-testing
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Install uv
+        uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
+        with:
+          enable-cache: true
+          cache-dependency-glob: langgraph-agent-testing/uv.lock
+      - name: Install locked dependencies
+        run: uv sync --locked
+      - name: Run the tests
+        run: uv run pytest test_agent.py -v
