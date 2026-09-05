@@ -1,0 +1,4 @@
+interface:
+  display_name: "Create istranin.dev Code Example"
+  short_description: "Build a self-contained article code example"
+  default_prompt: "Use $create-istranin-code-example to add a runnable example for an istranin.dev article."
