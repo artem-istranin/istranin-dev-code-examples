@@ -1,0 +1,11 @@
+[project]
+name = "pytest-hooks-examples"
+version = "0.1.0"
+description = "Runnable pytest hook examples for collection and reporting"
+requires-python = ">=3.13"
+dependencies = []
+
+[dependency-groups]
+dev = [
+    "pytest>=9.1.1",
+]

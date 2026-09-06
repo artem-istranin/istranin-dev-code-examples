@@ -11,6 +11,7 @@ Each directory is a self-contained project with its own dependencies, `pyproject
 | --- | --- |
 | [FastAPI testing with pytest](fastapi-testing-pytest/) | API testing, `TestClient`, validation, boundary cases |
 | [LangGraph agent testing with pytest](langgraph-agent-testing/) | Agent graphs, tool calls, pytest-mock, failure paths |
+| [Pytest hooks examples](pytest-hooks-examples/) | CLI options, markers, collection, hook wrappers, terminal reports |
 | [Test-driven development in Python with pytest](test-driven-development-python-pytest/) | Red-green-refactor, exceptions, parametrization, state boundaries |
 
 Open an example directory and follow its README to install the locked dependencies and run the code.
