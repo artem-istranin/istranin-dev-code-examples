@@ -1,0 +1,11 @@
+[project]
+name = "test-driven-development-python-pytest"
+version = "0.1.0"
+description = "Runnable test-driven development example using Python and pytest"
+requires-python = ">=3.13"
+dependencies = []
+
+[dependency-groups]
+dev = [
+    "pytest>=9.1.1",
+]
