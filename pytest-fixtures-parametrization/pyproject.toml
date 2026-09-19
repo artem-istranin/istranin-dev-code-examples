@@ -1,0 +1,15 @@
+[project]
+name = "pytest-fixtures-parametrization"
+version = "0.1.0"
+description = "Runnable fixture architecture and parametrization examples"
+requires-python = ">=3.13"
+dependencies = []
+
+[dependency-groups]
+dev = ["pytest>=9.1.1,<10", "pytest-xdist>=3.8,<4"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+addopts = "--strict-config --strict-markers"
+empty_parameter_set_mark = "fail_at_collect"
