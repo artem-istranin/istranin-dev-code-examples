@@ -1,0 +1,9 @@
+#!/bin/sh
+set -eu
+
+uv run pytest tests -q
+uv run pytest tests -n 2 -q
+uv run pytest tests/test_dynamic.py --opening-stock=3 --opening-stock=8 --opening-stock=3 -q
+uv run pytest refactoring/before.py refactoring/after.py -q
+uv run pytest benchmarks -q --catalog-scope=function
+uv run pytest benchmarks -q --catalog-scope=session
