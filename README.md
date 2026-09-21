@@ -13,6 +13,7 @@ Each directory is a self-contained project with its own dependencies, `pyproject
 | [Behavior-driven development in Python with pytest-bdd](behavior-driven-development-python-pytest-bdd/) | Shared examples, Gherkin, scenario outlines, reservation outcomes, TDD integration |
 | [LangGraph agent testing with pytest](langgraph-agent-testing/) | Agent graphs, tool calls, pytest-mock, failure paths |
 | [Pytest hooks examples](pytest-hooks-examples/) | CLI options, markers, collection, hook wrappers, terminal reports |
+| [Pytest mocking tutorial](pytest-mocking-tutorial/) | `mocker`, class and method patches, mock drift, lookup targets, decorators |
 | [Pytest fixtures and parametrization](pytest-fixtures-parametrization/) | Fixture architecture, factories, indirect setup, dynamic cases, scope costs, parallel workers |
 | [Test-driven development in Python with pytest](test-driven-development-python-pytest/) | Red-green-refactor, exceptions, parametrization, state boundaries |
 | [Unit testing vs integration testing vs E2E in Python](unit-integration-e2e-testing-python/) | Test boundaries, real configuration, subprocess CLI tests, regression and acceptance |
