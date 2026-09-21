@@ -15,5 +15,6 @@ Each directory is a self-contained project with its own dependencies, `pyproject
 | [Pytest hooks examples](pytest-hooks-examples/) | CLI options, markers, collection, hook wrappers, terminal reports |
 | [Pytest fixtures and parametrization](pytest-fixtures-parametrization/) | Fixture architecture, factories, indirect setup, dynamic cases, scope costs, parallel workers |
 | [Test-driven development in Python with pytest](test-driven-development-python-pytest/) | Red-green-refactor, exceptions, parametrization, state boundaries |
+| [Unit testing vs integration testing vs E2E in Python](unit-integration-e2e-testing-python/) | Test boundaries, real configuration, subprocess CLI tests, regression and acceptance |
 
 Open an example directory and follow its README to install the locked dependencies and run the code.

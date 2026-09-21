@@ -1,0 +1,8 @@
+{
+  "m": {"dimension": "length", "scale": 1},
+  "cm": {"dimension": "length", "scale": 100},
+  "kg": {"dimension": "mass", "scale": 1},
+  "g": {"dimension": "mass", "scale": 1000},
+  "C": {"dimension": "temperature", "scale": 1},
+  "F": {"dimension": "temperature", "scale": 1.8, "offset": 32}
+}
