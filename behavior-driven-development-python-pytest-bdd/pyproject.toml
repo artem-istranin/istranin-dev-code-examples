@@ -1,0 +1,17 @@
+[project]
+name = "behavior-driven-development-python-pytest-bdd"
+version = "0.1.0"
+description = "Seat reservation rules expressed as executable BDD scenarios"
+requires-python = ">=3.13"
+dependencies = []
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+addopts = "--strict-config --strict-markers"
+
+[dependency-groups]
+dev = [
+    "pytest>=8.4,<9",
+    "pytest-bdd>=8.1,<9",
+]

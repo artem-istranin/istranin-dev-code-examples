@@ -10,6 +10,7 @@ Each directory is a self-contained project with its own dependencies, `pyproject
 | Article example | Topics |
 | --- | --- |
 | [FastAPI testing with pytest](fastapi-testing-pytest/) | API testing, `TestClient`, validation, boundary cases |
+| [Behavior-driven development in Python with pytest-bdd](behavior-driven-development-python-pytest-bdd/) | Shared examples, Gherkin, scenario outlines, reservation outcomes, TDD integration |
 | [LangGraph agent testing with pytest](langgraph-agent-testing/) | Agent graphs, tool calls, pytest-mock, failure paths |
 | [Pytest hooks examples](pytest-hooks-examples/) | CLI options, markers, collection, hook wrappers, terminal reports |
 | [Pytest fixtures and parametrization](pytest-fixtures-parametrization/) | Fixture architecture, factories, indirect setup, dynamic cases, scope costs, parallel workers |
