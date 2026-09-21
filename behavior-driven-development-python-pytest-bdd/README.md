@@ -28,12 +28,6 @@ uv run pytest tests/test_inventory.py -v
 uv run pytest tests/test_reservations.py -v
 ```
 
-Run the reproducible project check, which syncs the lockfile and executes both groups:
-
-```bash
-./scripts/check
-```
-
 ## Project files
 
 ```text
@@ -44,8 +38,6 @@ behavior-driven-development-python-pytest-bdd/
       reservations.feature
     test_inventory.py
     test_reservations.py
-  scripts/
-    check
   pyproject.toml
   uv.lock
 ```
@@ -102,5 +94,5 @@ uv run pytest tests/test_reservations.py -v
 ```
 
 The exact-availability outline row and the later-customer scenario fail because reserving the last
-seats should succeed. Restore `>` and rerun `./scripts/check`. This exercise demonstrates the value of
+seats should succeed. Restore `>` and rerun `uv run pytest -v`. This exercise demonstrates the value of
 a boundary example without leaving a broken implementation in the project.
