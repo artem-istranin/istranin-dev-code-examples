@@ -1,13 +1,25 @@
+[![istranin.dev](../.github/assets/wordmark.svg)](https://istranin.dev/)
+
 # Unit testing vs integration testing vs E2E in Python
+
+> **Companion article:**
+> [Unit Testing vs Integration Testing vs E2E: Python Examples](https://istranin.dev/blog/unit-integration-e2e-testing-python/)
+> by Artem Istranin on [istranin.dev](https://istranin.dev/).
+
+## Overview
 
 One small command-line unit converter, tested at three boundaries. Adapted from the
 testing-levels example in the pytest course, with a smaller conversion model so the
 test boundaries stay easy to see.
 
-## Run it
+## Requirements
 
-Install [uv](https://docs.astral.sh/uv/getting-started/installation/) first. From this
-directory:
+- Python 3.13 or newer.
+- [uv](https://docs.astral.sh/uv/getting-started/installation/) for the locked dependencies.
+
+## Run the example
+
+From the `unit-integration-e2e-testing-python/` directory, install the locked dependencies and run:
 
 ```bash
 uv sync --locked
@@ -23,6 +35,28 @@ case-sensitive. A successful conversion writes one number to stdout. Unknown uni
 and incompatible dimensions write an explanation to stderr and exit with code 1.
 This teaching example handles ordinary finite numeric inputs; it is not a complete
 scientific-units library.
+
+## Project files
+
+```text
+unit-integration-e2e-testing-python/
+├── src/
+│   └── unit_converter/
+│       ├── __init__.py
+│       ├── converter.py
+│       ├── registry.py
+│       ├── cli.py
+│       └── units.json
+├── tests/
+│   ├── unit/
+│   │   └── test_converter.py
+│   ├── integration/
+│   │   └── test_registry_conversion.py
+│   └── e2e/
+│       └── test_cli.py
+├── pyproject.toml
+└── uv.lock
+```
 
 ## Where each test starts
 
@@ -110,3 +144,7 @@ uv run --isolated --no-project --with ./dist/testing_levels_unit_converter-0.1.0
 
 This should also print `77`. The project uses package resources rather than paths
 relative to the repository, and the wheel includes `units.json`.
+
+---
+
+[All examples](../README.md#article-examples) · [istranin.dev](https://istranin.dev/) · [Apache-2.0 license](../LICENSE)

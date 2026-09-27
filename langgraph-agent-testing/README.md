@@ -1,7 +1,12 @@
+[![istranin.dev](../.github/assets/wordmark.svg)](https://istranin.dev/)
+
 # LangGraph agent testing with pytest
 
-This is the runnable companion project for the istranin.dev article
-"How to Test a LangGraph Agent with pytest (Without API Calls)."
+> **Companion article:**
+> [How to Test a LangGraph Agent with pytest (Without API Calls)](https://istranin.dev/blog/test-langgraph-agent-pytest/)
+> by Artem Istranin on [istranin.dev](https://istranin.dev/).
+
+## Overview
 
 It demonstrates how to:
 
@@ -9,6 +14,22 @@ It demonstrates how to:
 - mock an external tool dependency with pytest-mock;
 - assert the tool input, `ToolMessage`, and final graph response;
 - protect an explicit timeout policy without making network requests.
+
+## Requirements
+
+- Python 3.13 or newer.
+- [uv](https://docs.astral.sh/uv/getting-started/installation/) for the locked dependencies.
+
+## Run the example
+
+From the `langgraph-agent-testing/` directory, install the locked dependencies and run:
+
+```bash
+uv sync --locked
+uv run pytest test_agent.py -v
+```
+
+The suite runs two deterministic tests. It does not need a model API key or an external order service.
 
 ## Project files
 
@@ -20,13 +41,6 @@ langgraph-agent-testing/
 └── uv.lock
 ```
 
-## Run the tests
+---
 
-Install the exact locked dependencies and execute the test suite:
-
-```bash
-uv sync --locked
-uv run pytest test_agent.py -v
-```
-
-The suite runs two deterministic tests. It does not need a model API key or an external order service.
+[All examples](../README.md#article-examples) · [istranin.dev](https://istranin.dev/) · [Apache-2.0 license](../LICENSE)

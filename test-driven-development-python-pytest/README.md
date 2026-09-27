@@ -1,7 +1,12 @@
+[![istranin.dev](../.github/assets/wordmark.svg)](https://istranin.dev/)
+
 # Test-driven development in Python with pytest
 
-This is the runnable companion project for the istranin.dev article
-[Test-Driven Development in Python with pytest: A Practical Guide](https://istranin.dev/blog/test-driven-development-python-pytest/).
+> **Companion article:**
+> [Test-Driven Development in Python with pytest: A Practical Guide](https://istranin.dev/blog/test-driven-development-python-pytest/)
+> by Artem Istranin on [istranin.dev](https://istranin.dev/).
+
+## Overview
 
 It demonstrates how a small red-green-refactor cycle can drive an inventory rule:
 
@@ -10,19 +15,14 @@ It demonstrates how a small red-green-refactor cycle can drive an inventory rule
 - zero and negative reservation quantities are rejected;
 - rejected reservations leave inventory unchanged.
 
-## Project files
+## Requirements
 
-```text
-test-driven-development-python-pytest/
-├── inventory.py
-├── test_inventory.py
-├── pyproject.toml
-└── uv.lock
-```
+- Python 3.13 or newer.
+- [uv](https://docs.astral.sh/uv/getting-started/installation/) for the locked dependencies.
 
-## Run the tests
+## Run the example
 
-Install the exact locked dependencies and execute the complete test suite:
+From the `test-driven-development-python-pytest/` directory, install the locked dependencies and run:
 
 ```bash
 uv sync --locked
@@ -40,3 +40,17 @@ uv run pytest test_inventory.py::test_reserving_seats_reduces_available_quantity
 
 Start with the test, watch it fail for the expected reason, make the smallest production change that
 passes, and refactor only while the full suite remains green.
+
+## Project files
+
+```text
+test-driven-development-python-pytest/
+├── inventory.py
+├── test_inventory.py
+├── pyproject.toml
+└── uv.lock
+```
+
+---
+
+[All examples](../README.md#article-examples) · [istranin.dev](https://istranin.dev/) · [Apache-2.0 license](../LICENSE)

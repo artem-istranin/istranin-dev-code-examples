@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="360" viewBox="0 0 1200 360" role="img" aria-labelledby="title description">
+  <title id="title">istranin.dev — Code you can run.</title>
+  <desc id="description">Runnable examples for Python, testing, and AI engineering, with the istranin.dev lime checkmark on a paper background.</desc>
+  <rect width="1200" height="360" rx="16" fill="#f6f7f2"/>
+  <g transform="translate(52 40)">
+    <rect width="56" height="56" rx="16" fill="#c8ff4d"/>
+    <path d="m16 29 8 8 17-20" fill="none" stroke="#0b151c" stroke-linecap="round" stroke-linejoin="round" stroke-width="6"/>
+  </g>
+  <g fill="#0b151c" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif">
+    <text x="124" y="79" font-size="36" font-weight="800" letter-spacing="-1">istranin.dev</text>
+    <text x="52" y="226" font-size="76" font-weight="800" letter-spacing="-3">Code you can run.</text>
+    <text x="54" y="284" font-size="27" fill="#34444d">Python, testing, and AI engineering.</text>
+  </g>
+  <text x="1148" y="74" text-anchor="end" fill="#5d696f" font-family="'SFMono-Regular', Consolas, 'Liberation Mono', monospace" font-size="16" letter-spacing="2">FIELD NOTES / CODE</text>
+  <path d="M52 122H1148" stroke="#d9e0dc"/>
+  <path d="M52 330H1148" stroke="#c8ff4d" stroke-width="6"/>
+</svg>

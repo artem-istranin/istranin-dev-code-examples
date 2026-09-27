@@ -1,4 +1,12 @@
+[![istranin.dev](../.github/assets/wordmark.svg)](https://istranin.dev/)
+
 # Pytest mocking tutorial
+
+> **Companion article:**
+> [Pytest Mocking Tutorial: Patch Dependencies Without Hiding Bugs](https://istranin.dev/blog/pytest-mocking-tutorial/)
+> by Artem Istranin on [istranin.dev](https://istranin.dev/).
+
+## Overview
 
 A small wallet demonstrates `pytest-mock` without requiring an API key, network
 access, or a database. A $100 deposit at the illustrative USD/EUR rate of 0.90
@@ -8,10 +16,14 @@ The provider reads a local JSON file. The wallet tests replace that dependency;
 the integration tests keep it real. The example intentionally omits persistence,
 historical rates, currency validation, and money-rounding rules.
 
+## Requirements
+
+- Python 3.13 or newer.
+- [uv](https://docs.astral.sh/uv/getting-started/installation/) for the locked dependencies.
+
 ## Run the example
 
-Use Python 3.13+ and [uv](https://docs.astral.sh/uv/getting-started/installation/).
-From this directory:
+From the `pytest-mocking-tutorial/` directory, install the locked dependencies and run:
 
 ```bash
 uv sync --locked
@@ -20,6 +32,27 @@ uv run pytest -q
 
 The lockfile pins pytest 9.1.1 and pytest-mock 3.15.1. All 16 tests should pass.
 There are no live network calls in the application or test suite.
+
+## Project files
+
+```text
+pytest-mocking-tutorial/
+├── wallet/
+│   ├── __init__.py
+│   ├── main.py
+│   ├── fx.py
+│   ├── events.py
+│   ├── decorators.py
+│   └── reported.py
+├── tests/
+│   ├── test_wallet.py
+│   ├── test_real_rates.py
+│   ├── test_reporting.py
+│   └── test_import_time_patch.py
+├── rates.json
+├── pyproject.toml
+└── uv.lock
+```
 
 ## Follow the progression
 
@@ -68,3 +101,7 @@ only coverage for authorization, transactions, retries, or similar guarantees.
 - [pytest-mock usage](https://pytest-mock.readthedocs.io/en/latest/usage.html)
 - [Python: where to patch](https://docs.python.org/3/library/unittest.mock.html#where-to-patch)
 - [Python: autospeccing](https://docs.python.org/3/library/unittest.mock.html#autospeccing)
+
+---
+
+[All examples](../README.md#article-examples) · [istranin.dev](https://istranin.dev/) · [Apache-2.0 license](../LICENSE)

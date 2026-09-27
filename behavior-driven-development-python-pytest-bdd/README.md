@@ -1,4 +1,12 @@
+[![istranin.dev](../.github/assets/wordmark.svg)](https://istranin.dev/)
+
 # Behavior-driven development in Python with pytest-bdd
+
+> **Companion article:**
+> [Behavior-Driven Development in Python with pytest-bdd](https://istranin.dev/blog/behavior-driven-development-python-pytest-bdd/)
+> by Artem Istranin on [istranin.dev](https://istranin.dev/).
+
+## Overview
 
 Continue the seat-reservation example from
 [Test-Driven Development in Python with pytest](https://istranin.dev/blog/test-driven-development-python-pytest/).
@@ -6,10 +14,14 @@ The `Inventory` implementation and four original pytest cases are preserved. Ghe
 the same rules reviewable as concrete customer outcomes and add examples for selling the last seats,
 an empty inventory, and a valid request after an earlier rejection.
 
+## Requirements
+
+- Python 3.13 or newer.
+- [uv](https://docs.astral.sh/uv/getting-started/installation/) for the locked dependencies.
+
 ## Run the example
 
-Requires Python 3.13 or newer and [uv](https://docs.astral.sh/uv/getting-started/installation/).
-From this directory:
+From the `behavior-driven-development-python-pytest-bdd/` directory, install the locked dependencies and run:
 
 ```bash
 uv sync --locked
@@ -32,14 +44,14 @@ uv run pytest tests/test_reservations.py -v
 
 ```text
 behavior-driven-development-python-pytest-bdd/
-  inventory.py
-  tests/
-    features/
-      reservations.feature
-    test_inventory.py
-    test_reservations.py
-  pyproject.toml
-  uv.lock
+├── inventory.py
+├── tests/
+│   ├── features/
+│   │   └── reservations.feature
+│   ├── test_inventory.py
+│   └── test_reservations.py
+├── pyproject.toml
+└── uv.lock
 ```
 
 ## Agree on examples before automating them
@@ -96,3 +108,7 @@ uv run pytest tests/test_reservations.py -v
 The exact-availability outline row and the later-customer scenario fail because reserving the last
 seats should succeed. Restore `>` and rerun `uv run pytest -v`. This exercise demonstrates the value of
 a boundary example without leaving a broken implementation in the project.
+
+---
+
+[All examples](../README.md#article-examples) · [istranin.dev](https://istranin.dev/) · [Apache-2.0 license](../LICENSE)
