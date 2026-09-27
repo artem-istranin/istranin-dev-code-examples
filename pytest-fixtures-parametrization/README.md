@@ -1,13 +1,28 @@
+[![istranin.dev](../.github/assets/wordmark.svg)](https://istranin.dev/)
+
 # Pytest fixtures and parametrization
+
+> **Companion article:**
+> [Pytest Fixtures and Parametrization: A Guide to Scalable Tests](https://istranin.dev/blog/pytest-fixtures-parametrization-scalable-tests/)
+> by Artem Istranin on [istranin.dev](https://istranin.dev/).
+
+## Overview
 
 A self-contained example of fixture architecture for a growing test suite. The
 SQLite inventory contract runs against memory and temporary-file storage, with
 fresh mutable state for every test item.
 
-Requires uv and Python 3.13 or later. `.python-version` selects Python 3.13; the
+## Requirements
+
+- Python 3.13 or newer.
+- [uv](https://docs.astral.sh/uv/getting-started/installation/) for the locked dependencies.
+
+`.python-version` selects Python 3.13; the
 lockfile pins pytest 9.1.1 and pytest-xdist 3.8.0.
 
-## Run the examples
+## Run the example
+
+From the `pytest-fixtures-parametrization/` directory, install the locked dependencies and run:
 
 ```bash
 uv sync --locked
@@ -27,6 +42,29 @@ uv run pytest tests/test_reservations.py::test_reserve --collect-only -q
 uv run pytest 'tests/test_reservations.py::test_reserve[file-exhaust-stock]' -q
 uv run pytest tests/test_reservations.py::test_reserve --setup-plan -q
 uv run pytest --durations=20 --durations-min=0 -q
+```
+
+## Project files
+
+```text
+pytest-fixtures-parametrization/
+├── inventory.py
+├── tests/
+│   ├── conftest.py
+│   ├── test_dynamic.py
+│   ├── test_prepared.py
+│   ├── test_products.py
+│   └── test_reservations.py
+├── refactoring/
+│   ├── before.py
+│   └── after.py
+├── benchmarks/
+│   ├── conftest.py
+│   └── test_scope_cost.py
+├── scripts/
+│   └── check
+├── pyproject.toml
+└── uv.lock
 ```
 
 ## Examples by responsibility
@@ -106,3 +144,7 @@ The script runs serial and parallel tests, custom dynamic cases, the refactoring
 alternatives, and both scope experiments. No external services or credentials are
 required. The illustrative application is intentionally small; it does not model
 a production inventory system's full transaction or concurrency requirements.
+
+---
+
+[All examples](../README.md#article-examples) · [istranin.dev](https://istranin.dev/) · [Apache-2.0 license](../LICENSE)
