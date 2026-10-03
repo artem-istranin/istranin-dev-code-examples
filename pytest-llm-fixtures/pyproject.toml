@@ -1,0 +1,31 @@
+[project]
+name = "pytest-llm-fixtures"
+version = "0.1.0"
+description = "Offline pytest fixtures and provider adapters for a bounded AI agent"
+requires-python = ">=3.13"
+dependencies = [
+    "anthropic>=1.11.0",
+    "httpx2>=2.13.1",
+    "openai>=3.24.0",
+    "pydantic>=2.13.5",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=9.1.1",
+    "pytest-cov>=7.1.0",
+    "pytest-mock>=3.16.0",
+    "pytest-socket>=0.8.1",
+    "ruff>=0.16.10",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+addopts = "--strict-config --strict-markers --disable-socket -q"
+
+[tool.ruff]
+target-version = "py313"
+
+[tool.ruff.lint]
+select = ["E4", "E7", "E9", "F", "I"]
