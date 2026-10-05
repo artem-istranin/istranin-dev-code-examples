@@ -2,7 +2,8 @@
 
 # Pytest fixtures and mocking for AI agents
 
-> **Companion article:** Pytest Fixtures and Mocking for AI Agents and LLM Apps
+> **Companion article:**
+> [Pytest Fixtures and Mocking for AI Agents and LLM Apps](https://istranin.dev/blog/pytest-fixtures-mocking-llm-agents/)
 > by Artem Istranin on [istranin.dev](https://istranin.dev/).
 
 ## Overview
