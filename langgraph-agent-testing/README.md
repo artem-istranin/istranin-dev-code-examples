@@ -12,7 +12,7 @@ It demonstrates how to:
 
 - run a compiled LangGraph `StateGraph` with scripted model responses;
 - mock an external tool dependency with pytest-mock;
-- assert the tool input, `ToolMessage`, and final graph response;
+- assert the tool input, `ToolMessage`, its delivery to the next model turn, and final graph response;
 - protect an explicit timeout policy without making network requests.
 
 ## Requirements
