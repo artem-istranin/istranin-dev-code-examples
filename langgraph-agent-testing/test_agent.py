@@ -43,6 +43,13 @@ def test_agent_looks_up_order_and_returns_status(mocker: MockerFixture):
     order_client.get_status.assert_called_once_with("A-42")
     assert isinstance(result["messages"][-2], ToolMessage)
     assert result["messages"][-2].content == "shipped"
+    second_call = model.bind_tools.return_value.invoke.call_args_list[1]
+    assert any(
+        isinstance(message, ToolMessage)
+        and message.tool_call_id == "call-1"
+        and message.content == "shipped"
+        for message in second_call.args[0]
+    )
     assert result["messages"][-1].content == "Order A-42 has shipped."
 
 

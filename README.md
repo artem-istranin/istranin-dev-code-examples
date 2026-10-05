@@ -16,7 +16,10 @@ Read the corresponding article for the explanation, then use its example to run 
 
 | Example | Topics | Article |
 | --- | --- | --- |
-| [Pytest fixtures and mocking for AI agents](pytest-llm-fixtures/) | Scripted models, OpenAI and Anthropic adapters, HTTP mocks, offline CI | Pytest Fixtures and Mocking for AI Agents and LLM Apps |
+| [Pytest fixtures and mocking for AI agents](pytest-llm-fixtures/) | Scripted models, OpenAI and Anthropic adapters, HTTP mocks, offline CI | [Read ↗](https://istranin.dev/blog/pytest-fixtures-mocking-llm-agents/) |
+| [Your first pytest test](pytest-for-beginners-first-python-test/) | Given-When-Then, plain assertions, failure reports, boundaries | [Read ↗](https://istranin.dev/blog/pytest-for-beginners-first-python-test/) |
+| [Python unit testing best practices](python-unit-testing-best-practices-pytest/) | Behavior, parametrization, explicit fixtures, autospecced collaborators | [Read ↗](https://istranin.dev/blog/python-unit-testing-best-practices-pytest/) |
+| [GitHub Actions Python testing](github-actions-python-testing-pytest/) | Python matrix, coverage, JUnit reports, stable merge check | [Read ↗](https://istranin.dev/blog/github-actions-python-testing-pytest/) |
 | [FastAPI testing with pytest](fastapi-testing-pytest/) | API testing, `TestClient`, validation, boundary cases | [Read ↗](https://istranin.dev/blog/fastapi-testing-pytest/) |
 | [Behavior-driven development in Python with pytest-bdd](behavior-driven-development-python-pytest-bdd/) | Shared examples, Gherkin, scenario outlines, reservation outcomes, TDD integration | [Read ↗](https://istranin.dev/blog/behavior-driven-development-python-pytest-bdd/) |
 | [LangGraph agent testing with pytest](langgraph-agent-testing/) | Agent graphs, tool calls, pytest-mock, failure paths | [Read ↗](https://istranin.dev/blog/test-langgraph-agent-pytest/) |

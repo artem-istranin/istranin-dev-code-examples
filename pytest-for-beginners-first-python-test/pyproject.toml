@@ -1,0 +1,11 @@
+[project]
+name = "pytest-for-beginners-first-python-test"
+version = "0.1.0"
+description = "A first pytest suite for a simple shipping rule"
+requires-python = ">=3.13"
+dependencies = []
+
+[dependency-groups]
+dev = [
+    "pytest>=9,<10",
+]
