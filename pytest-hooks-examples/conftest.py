@@ -71,7 +71,7 @@ def pytest_terminal_summary(terminalreporter, config):
     command = shlex.join(
         ['uv', 'run', 'pytest', f'--env={environment}', '-q', *failed_test_ids]
     )
-    terminalreporter.section(f'CHECKOUT CHECK: {environment.upper()}')
-    terminalreporter.write_line(f'Tests needing attention: {len(failed_test_ids)}')
-    terminalreporter.write_line('Rerun just these tests:')
+    terminalreporter.section(f'🛒 CHECKOUT CHECK: {environment.upper()}')
+    terminalreporter.write_line(f'❌ Tests needing attention: {len(failed_test_ids)}')
+    terminalreporter.write_line('🔁 Rerun just these tests:')
     terminalreporter.write_line(command)

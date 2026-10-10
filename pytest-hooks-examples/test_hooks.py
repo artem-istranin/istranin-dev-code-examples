@@ -107,8 +107,8 @@ def test_rerun_command_selects_only_failures_in_the_same_environment(
     result.stdout.fnmatch_lines(
         [
             f'*CHECKOUT CHECK: {environment.upper()}*',
-            'Tests needing attention: 2',
-            'Rerun just these tests:',
+            '*Tests needing attention: 2',
+            '*Rerun just these tests:',
         ]
     )
     command = next(line for line in result.stdout.lines if line.startswith('uv run '))
@@ -164,7 +164,7 @@ def test_rerun_command_includes_setup_and_cleanup_failures_once(
     result.assert_outcomes(failed=1, passed=1, errors=3)
     result.stdout.fnmatch_lines(
         [
-            'Tests needing attention: 3',
+            '*Tests needing attention: 3',
             'uv run pytest --env=local -q '
             'test_errors.py::test_call_and_cleanup '
             'test_errors.py::test_cleanup test_errors.py::test_setup',

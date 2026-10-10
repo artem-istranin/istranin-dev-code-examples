@@ -56,9 +56,9 @@ The result is **1 failed, 2 passed**, with exit status `1`. After the assertion
 details, the plugin adds:
 
 ```text
-======================= CHECKOUT CHECK: STAGING ========================
-Tests needing attention: 1
-Rerun just these tests:
+====================== 🛒 CHECKOUT CHECK: STAGING =======================
+❌ Tests needing attention: 1
+🔁 Rerun just these tests:
 uv run pytest --env=staging -q failure_example.py::test_inventory_count
 ```
 
