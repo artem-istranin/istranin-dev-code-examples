@@ -29,13 +29,25 @@ From the `pytest-hooks-examples/` directory, install the locked dependencies and
 
 ```bash
 uv sync --locked
-uv run pytest -q
+uv run pytest test_checkout.py -q
 ```
 
-The result is two passing tests and one skipped staging test. Select the staging environment to run
-all three tests:
+The result is one passing test and one skipped staging test. Select the staging environment to run
+both demonstration tests:
 
 ```bash
+uv run pytest test_checkout.py -q --env=staging
+```
+
+Use `@pytest.mark.env('local')` or `@pytest.mark.env('staging')` to restrict a test
+to one environment. Tests without the marker run in either environment. A marker
+with missing, extra, or keyword arguments, or an unsupported environment, stops
+the run with a usage error naming the affected test.
+
+Run all demonstration and plugin regression tests with:
+
+```bash
+uv run pytest -q
 uv run pytest -q --env=staging
 ```
 

@@ -5,6 +5,7 @@ from collections.abc import Generator
 import pytest
 
 
+ENVIRONMENTS = ('local', 'staging')
 FAILED_TESTS = pytest.StashKey[list[str]]()
 
 
@@ -14,7 +15,7 @@ def pytest_addoption(parser: pytest.Parser) -> None:
         '--env',
         action='store',
         default='local',
-        choices=('local', 'staging'),
+        choices=ENVIRONMENTS,
         help='run tests for the selected environment',
     )
 
@@ -23,7 +24,7 @@ def pytest_configure(config: pytest.Config) -> None:
     """Register the environment marker in pytest's active configuration."""
     config.addinivalue_line(
         'markers',
-        'env(name): run the test only for the named environment',
+        "env(name): run only in the named environment ('local' or 'staging')",
     )
 
 
@@ -38,6 +39,16 @@ def pytest_collection_modifyitems(
         env_marker = item.get_closest_marker('env')
         if env_marker is None:
             continue
+
+        if (
+            len(env_marker.args) != 1
+            or env_marker.kwargs
+            or env_marker.args[0] not in ENVIRONMENTS
+        ):
+            raise pytest.UsageError(
+                f'{item.nodeid}: env marker requires exactly one positional '
+                "argument: 'local' or 'staging'"
+            )
 
         required_env = env_marker.args[0]
         if required_env != selected_env:
