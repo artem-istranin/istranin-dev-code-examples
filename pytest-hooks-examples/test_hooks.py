@@ -118,7 +118,6 @@ def test_rerun_command_selects_only_failures_in_the_same_environment(
         'run',
         'pytest',
         f'--env={environment}',
-        '-q',
         'test_failure.py::test_failure[cart total [EUR]]',
         'test_failure.py::test_failure[empty]',
     ]
@@ -165,7 +164,7 @@ def test_rerun_command_includes_setup_and_cleanup_failures_once(
     result.stdout.fnmatch_lines(
         [
             '*Tests needing attention: 3',
-            'uv run pytest --env=local -q '
+            'uv run pytest --env=local '
             'test_errors.py::test_call_and_cleanup '
             'test_errors.py::test_cleanup test_errors.py::test_setup',
         ]

@@ -69,7 +69,7 @@ def pytest_terminal_summary(terminalreporter, config):
 
     environment = config.getoption('--env')
     command = shlex.join(
-        ['uv', 'run', 'pytest', f'--env={environment}', '-q', *failed_test_ids]
+        ['uv', 'run', 'pytest', f'--env={environment}', *failed_test_ids]
     )
     terminalreporter.section(f'🛒 CHECKOUT CHECK: {environment.upper()}')
     terminalreporter.write_line(f'❌ Tests needing attention: {len(failed_test_ids)}')

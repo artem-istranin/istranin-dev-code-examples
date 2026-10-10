@@ -27,14 +27,14 @@ From the `pytest-hooks-examples/` directory, install the locked dependencies and
 
 ```bash
 uv sync --locked
-uv run pytest test_checkout.py -q -rs
+uv run pytest test_checkout.py
 ```
 
 The result is **1 passed, 1 skipped**. The skipped check requires staging.
 Choose that environment to run both checks:
 
 ```bash
-uv run pytest test_checkout.py -q --env=staging
+uv run pytest test_checkout.py --env=staging
 ```
 
 The result is **2 passed**.
@@ -49,7 +49,7 @@ stop the run with a usage error naming the affected test.
 excluded from normal test discovery. Request it alongside the passing checks:
 
 ```bash
-uv run pytest test_checkout.py failure_example.py -q --env=staging
+uv run pytest test_checkout.py failure_example.py --env=staging
 ```
 
 The result is **1 failed, 2 passed**, with exit status `1`. After the assertion
@@ -59,7 +59,7 @@ details, the plugin adds:
 ====================== 🛒 CHECKOUT CHECK: STAGING =======================
 ❌ Tests needing attention: 1
 🔁 Rerun just these tests:
-uv run pytest --env=staging -q failure_example.py::test_inventory_count
+uv run pytest --env=staging failure_example.py::test_inventory_count
 ```
 
 Copy that command to rerun only the inventory check, keeping `--env=staging`.
@@ -86,8 +86,8 @@ and rerunning only the failed test IDs, including names that need shell quoting.
 Run the demonstration tests and plugin tests together:
 
 ```bash
-uv run pytest -q
-uv run pytest -q --env=staging
+uv run pytest
+uv run pytest --env=staging
 ```
 
 ## Project files
