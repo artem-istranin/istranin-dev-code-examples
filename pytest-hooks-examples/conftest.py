@@ -1,15 +1,13 @@
-from __future__ import annotations
-
-from collections.abc import Generator
+import shlex
 
 import pytest
 
 
 ENVIRONMENTS = ('local', 'staging')
-FAILED_TESTS = pytest.StashKey[list[str]]()
+FAILED_TESTS = pytest.StashKey[set[str]]()
 
 
-def pytest_addoption(parser: pytest.Parser) -> None:
+def pytest_addoption(parser):
     """Add the environment selector used by this test suite."""
     parser.addoption(
         '--env',
@@ -20,7 +18,7 @@ def pytest_addoption(parser: pytest.Parser) -> None:
     )
 
 
-def pytest_configure(config: pytest.Config) -> None:
+def pytest_configure(config):
     """Register the environment marker in pytest's active configuration."""
     config.addinivalue_line(
         'markers',
@@ -28,10 +26,7 @@ def pytest_configure(config: pytest.Config) -> None:
     )
 
 
-def pytest_collection_modifyitems(
-    config: pytest.Config,
-    items: list[pytest.Item],
-) -> None:
+def pytest_collection_modifyitems(config, items):
     """Skip tests whose environment marker does not match ``--env``."""
     selected_env = config.getoption('--env')
 
@@ -56,29 +51,27 @@ def pytest_collection_modifyitems(
 
 
 @pytest.hookimpl(wrapper=True)
-def pytest_runtest_makereport(
-    item: pytest.Item,
-    call: pytest.CallInfo[None],
-) -> Generator[None, pytest.TestReport, pytest.TestReport]:
-    """Remember failed test calls after other report hooks have run."""
+def pytest_runtest_makereport(item):
+    """Remember tests with failures in setup, the test body, or cleanup."""
     report = yield
 
-    if report.when == 'call' and report.failed:
-        failed_test_ids = item.config.stash.setdefault(FAILED_TESTS, [])
-        failed_test_ids.append(report.nodeid)
+    if report.failed:
+        item.config.stash.setdefault(FAILED_TESTS, set()).add(report.nodeid)
 
     return report
 
 
-def pytest_terminal_summary(
-    terminalreporter: pytest.TerminalReporter,
-    config: pytest.Config,
-) -> None:
-    """Add a compact failure list to the end of terminal output."""
-    failed_test_ids = config.stash.get(FAILED_TESTS, [])
+def pytest_terminal_summary(terminalreporter, config):
+    """Print a command to rerun failed tests in the selected environment."""
+    failed_test_ids = sorted(config.stash.get(FAILED_TESTS, set()))
     if not failed_test_ids:
         return
 
-    terminalreporter.section('failed tests for triage')
-    for nodeid in failed_test_ids:
-        terminalreporter.write_line(nodeid)
+    environment = config.getoption('--env')
+    command = shlex.join(
+        ['uv', 'run', 'pytest', f'--env={environment}', *failed_test_ids]
+    )
+    terminalreporter.section(f'🛒 CHECKOUT CHECK: {environment.upper()}')
+    terminalreporter.write_line(f'❌ Tests needing attention: {len(failed_test_ids)}')
+    terminalreporter.write_line('🔁 Rerun just these tests:')
+    terminalreporter.write_line(command)

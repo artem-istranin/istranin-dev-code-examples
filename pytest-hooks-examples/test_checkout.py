@@ -3,7 +3,7 @@ import pytest
 from checkout import checkout_message
 
 
-def test_checkout_is_available_locally() -> None:
+def test_checkout_message() -> None:
     assert checkout_message('local') == 'checkout ready in local'
 
 
