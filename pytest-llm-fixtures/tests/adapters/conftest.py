@@ -10,7 +10,7 @@ import pytest
 from anthropic.types import Message
 from openai.types.responses import Response
 
-from providers import AnthropicTextModel, OpenAITextModel
+from providers import AnthropicModel, OpenAIModel
 
 
 @pytest.fixture(params=["openai", "anthropic"])
@@ -90,8 +90,8 @@ def adapter_factory(provider):
                 transport=httpx2.MockTransport(handle), trust_env=False
             )
             sdk_class, adapter_class = {
-                "openai": (openai.OpenAI, OpenAITextModel),
-                "anthropic": (anthropic.Anthropic, AnthropicTextModel),
+                "openai": (openai.OpenAI, OpenAIModel),
+                "anthropic": (anthropic.Anthropic, AnthropicModel),
             }[provider]
             client = stack.enter_context(
                 sdk_class(

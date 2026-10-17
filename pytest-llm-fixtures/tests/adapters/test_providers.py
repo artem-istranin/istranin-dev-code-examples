@@ -7,7 +7,7 @@ import httpx2
 import openai
 import pytest
 
-from agent import INSTRUCTIONS, InvalidDecision, ModelUnavailable, run_agent
+from agent import Decision, InvalidDecision, ModelUnavailable, Observation, run_agent
 
 
 def test_request_serialization_and_response_parsing(
@@ -18,8 +18,12 @@ def test_request_serialization_and_response_parsing(
         httpx2.Response(200, json=response_body(output))
     )
 
-    assert adapter.complete(instructions="Return JSON", prompt="A question") == output
+    observation = Observation("installation requirements", "Requires Python >=3.13.")
+    decision = adapter.decide(
+        question="Which Python version?", observations=(observation,)
+    )
 
+    assert decision == Decision(action="answer", value="Done")
     assert len(requests) == 1
     request = requests[0]
     payload = json.loads(request.content)
@@ -27,13 +31,18 @@ def test_request_serialization_and_response_parsing(
     assert payload["model"] == "offline-test-model"
     if provider == "openai":
         assert request.url.path == "/v1/responses"
-        assert payload["instructions"] == "Return JSON"
-        assert payload["input"] == "A question"
+        data = json.loads(payload["input"])
     else:
         assert request.url.path == "/v1/messages"
-        assert payload["system"] == "Return JSON"
-        assert payload["messages"] == [{"role": "user", "content": "A question"}]
+        assert payload["messages"][0]["role"] == "user"
+        data = json.loads(payload["messages"][0]["content"])
         assert payload["max_tokens"] == 512
+    assert data == {
+        "question": "Which Python version?",
+        "observations": [
+            {"query": "installation requirements", "result": "Requires Python >=3.13."}
+        ],
+    }
 
 
 @pytest.mark.parametrize("failure", ["timeout", "rate-limit"])
@@ -48,7 +57,7 @@ def test_transient_failures_are_translated_without_retries(failure, adapter_fact
     adapter, requests = adapter_factory(outcome)
 
     with pytest.raises(ModelUnavailable):
-        adapter.complete(instructions="Return JSON", prompt="A question")
+        adapter.decide(question="A question", observations=())
     assert len(requests) == 1
 
 
@@ -64,7 +73,7 @@ def test_authentication_errors_are_not_hidden_as_transient(provider, adapter_fac
         else anthropic.AuthenticationError
     )
     with pytest.raises(error_type):
-        adapter.complete(instructions="Return JSON", prompt="A question")
+        adapter.decide(question="A question", observations=())
     assert len(requests) == 1
 
 
@@ -73,14 +82,14 @@ def test_truncated_response_is_rejected(response_body, adapter_factory):
         httpx2.Response(200, json=response_body('{"action":', complete=False))
     )
     with pytest.raises(InvalidDecision, match="not complete"):
-        adapter.complete(instructions="Return JSON", prompt="A question")
+        adapter.decide(question="A question", observations=())
 
 
 @pytest.mark.parametrize("text", ["", "   "])
 def test_empty_text_is_rejected(text, response_body, adapter_factory):
     adapter, _ = adapter_factory(httpx2.Response(200, json=response_body(text)))
     with pytest.raises(InvalidDecision, match="no text"):
-        adapter.complete(instructions="Return JSON", prompt="A question")
+        adapter.decide(question="A question", observations=())
 
 
 def test_non_text_blocks_are_not_treated_as_answers(
@@ -95,7 +104,7 @@ def test_non_text_blocks_are_not_treated_as_answers(
         httpx2.Response(200, json=response_body("", blocks=blocks))
     )
     with pytest.raises(InvalidDecision, match="no text"):
-        adapter.complete(instructions="Return JSON", prompt="A question")
+        adapter.decide(question="A question", observations=())
 
 
 def test_agent_and_real_adapter_work_together(
@@ -103,24 +112,53 @@ def test_agent_and_real_adapter_work_together(
 ):
     adapter, requests = adapter_factory(
         httpx2.Response(
-            200, json=response_body('{"action":"search_docs","value":"refunds"}')
+            200,
+            json=response_body(
+                '{"action":"search_docs","value":"installation requirements"}'
+            ),
         ),
         httpx2.Response(
-            200, json=response_body('{"action":"answer","value":"30 days"}')
+            200,
+            json=response_body('{"action":"answer","value":"Python 3.13 or newer"}'),
         ),
     )
-    search = mocker.Mock(return_value="Refund window: 30 days.")
+    search = mocker.Mock(return_value="Requires Python >=3.13.")
 
-    assert run_agent(adapter, search, "What is the refund window?") == "30 days"
-    search.assert_called_once_with("refunds")
+    assert (
+        run_agent(adapter, search, "Which Python version do I need?")
+        == "Python 3.13 or newer"
+    )
+    search.assert_called_once_with("installation requirements")
     assert len(requests) == 2
     body = json.loads(requests[1].content)
     if provider == "openai":
         prompt = body["input"]
-        assert body["instructions"] == INSTRUCTIONS
     else:
         prompt = body["messages"][0]["content"]
-        assert body["system"] == INSTRUCTIONS
     assert json.loads(prompt)["observations"] == [
-        {"query": "refunds", "result": "Refund window: 30 days."}
+        {"query": "installation requirements", "result": "Requires Python >=3.13."}
     ]
+
+
+@pytest.mark.parametrize(
+    "raw",
+    [
+        pytest.param("not JSON", id="malformed-json"),
+        pytest.param('{"action":"delete_account","value":"42"}', id="unknown-tool"),
+        pytest.param('{"action":"search_docs","value":12}', id="wrong-argument-type"),
+        pytest.param('{"action":"search_docs","value":" "}', id="empty-query"),
+        pytest.param('{"action":"answer"}', id="missing-value"),
+        pytest.param('{"action":"answer","value":"ok","extra":true}', id="extra-field"),
+    ],
+)
+def test_invalid_decisions_never_reach_tools(
+    raw, response_body, adapter_factory, mocker
+):
+    adapter, requests = adapter_factory(httpx2.Response(200, json=response_body(raw)))
+    search = mocker.Mock()
+
+    with pytest.raises(InvalidDecision):
+        run_agent(adapter, search, "Which Python version?")
+
+    search.assert_not_called()
+    assert len(requests) == 1
