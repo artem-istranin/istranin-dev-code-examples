@@ -12,6 +12,7 @@ It demonstrates how to:
 
 - run a compiled LangGraph `StateGraph` with scripted model responses;
 - mock an external tool dependency with pytest-mock;
+- use fresh fixtures and parametrized cases to check both routing branches;
 - assert the tool input, `ToolMessage`, its delivery to the next model turn, and final graph response;
 - protect an explicit timeout policy without making network requests.
 
@@ -29,7 +30,28 @@ uv sync --locked
 uv run pytest test_agent.py -v
 ```
 
-The suite runs two deterministic tests. It does not need a model API key or an external order service.
+The suite runs 4 deterministic cases: a direct answer, 2 parametrized order lookups, and a service timeout. It does not need a model API key or an external order service.
+
+## Test patterns
+
+`model_script` supplies real `AIMessage` values through a mocked model. It returns the
+model passed to `build_agent` and the tool-bound model whose `invoke` calls the tests
+inspect. `order_client` provides a fresh autospecced service mock for each test case.
+
+The application graph stays unchanged: the real model node, `tools_condition`, and
+`ToolNode` process those messages. The example checks direct completion, a tool result
+reaching the next model turn, and a timeout stopping the graph without a second model
+call. It does not test a live model's tool choice or answer quality.
+
+To observe a routing regression, temporarily remove
+`builder.add_edge("tools", "model")` from `agent.py` and run:
+
+```bash
+uv run pytest test_agent.py -k tool_result_reaches_next_turn -v
+```
+
+Both cases fail because the model runs only once. Restore the edge and run the full
+suite again; all 4 cases should pass.
 
 ## Project files
 
