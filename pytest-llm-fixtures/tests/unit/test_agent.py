@@ -1,124 +1,95 @@
-"""Protect agent outcomes, tool restrictions, failure policy, and fresh state."""
-
-import json
+"""Protect tool dispatch, returned answers, failure handling, and isolation."""
 
 import pytest
 
-from agent import INSTRUCTIONS, InvalidDecision, ModelUnavailable, StepLimitExceeded
+from agent import Decision, ModelUnavailable, Observation, StepLimitExceeded, run_agent
 
 
-def test_search_result_reaches_next_turn(llm_script, search_tool, agent_factory):
-    model = llm_script(
-        '{"action":"search_docs","value":"refund policy"}',
-        '{"action":"answer","value":"Refunds are available for 30 days."}',
-    )
-    search_tool.return_value = "Refund window: 30 days."
-    ask = agent_factory(model)
+def test_direct_answer_does_not_search(model_script, search_tool):
+    model = model_script(Decision(action="answer", value="Hello!"))
 
-    assert ask("Can I request a refund?") == "Refunds are available for 30 days."
-    search_tool.assert_called_once_with("refund policy")
-    second_prompt = json.loads(model.complete.call_args_list[1].kwargs["prompt"])
-    assert second_prompt["observations"] == [
-        {"query": "refund policy", "result": "Refund window: 30 days."}
-    ]
-    assert model.complete.call_count == 2
+    result = run_agent(model, search_tool, "Hello")
 
-
-@pytest.mark.parametrize(
-    "raw",
-    [
-        pytest.param("not JSON", id="malformed-json"),
-        pytest.param('{"action":"delete_account","value":"42"}', id="unknown-tool"),
-        pytest.param('{"action":"search_docs","value":12}', id="wrong-argument-type"),
-        pytest.param('{"action":"search_docs","value":" "}', id="empty-query"),
-        pytest.param('{"action":"answer"}', id="missing-value"),
-        pytest.param('{"action":"answer","value":"ok","extra":true}', id="extra-field"),
-    ],
-)
-def test_invalid_decisions_never_call_tools(
-    raw, llm_script, search_tool, agent_factory
-):
-    ask = agent_factory(llm_script(raw))
-
-    with pytest.raises(InvalidDecision):
-        ask("Find the refund policy")
+    assert result == "Hello!"
+    model.decide.assert_called_once_with(question="Hello", observations=())
     search_tool.assert_not_called()
 
 
-def test_budget_stops_before_another_tool_call(llm_script, search_tool, agent_factory):
-    search = '{"action":"search_docs","value":"refund policy"}'
-    model = llm_script(search, search)
+def test_search_then_answer(model_script, search_tool, mocker):
+    model = model_script(
+        Decision(action="search_docs", value="installation requirements"),
+        Decision(action="answer", value="Use Python 3.13 or newer."),
+    )
+    search_tool.return_value = "Requires Python >=3.13."
+    question = "Which Python version do I need?"
+
+    result = run_agent(model, search_tool, question)
+
+    assert result == "Use Python 3.13 or newer."
+    search_tool.assert_called_once_with("installation requirements")
+    assert model.decide.call_args_list == [
+        mocker.call(question=question, observations=()),
+        mocker.call(
+            question=question,
+            observations=(
+                Observation("installation requirements", "Requires Python >=3.13."),
+            ),
+        ),
+    ]
+
+
+def test_budget_stops_before_another_tool_call(model_script, search_tool):
+    search = Decision(action="search_docs", value="installation requirements")
+    model = model_script(search, search)
     search_tool.return_value = "No matching document."
-    ask = agent_factory(model, max_steps=2)
 
     with pytest.raises(StepLimitExceeded):
-        ask("Find the refund policy")
-    assert model.complete.call_count == 2
-    search_tool.assert_called_once_with("refund policy")
+        run_agent(model, search_tool, "Which Python version?", max_steps=2)
+
+    assert model.decide.call_count == 2
+    search_tool.assert_called_once_with("installation requirements")
 
 
-def test_invalid_budget_does_no_work(llm_script, search_tool, agent_factory):
-    model = llm_script()
+def test_invalid_budget_does_no_work(model_script, search_tool):
+    model = model_script()
     with pytest.raises(ValueError, match="max_steps"):
-        agent_factory(model, max_steps=0)("Hello")
-    model.complete.assert_not_called()
+        run_agent(model, search_tool, "Hello", max_steps=0)
+    model.decide.assert_not_called()
     search_tool.assert_not_called()
 
 
-def test_model_failure_stops_without_retry(llm_script, search_tool, agent_factory):
-    model = llm_script(ModelUnavailable("busy"))
+def test_model_failure_stops_without_retry(model_script, search_tool):
+    model = model_script(ModelUnavailable("busy"))
+
     with pytest.raises(ModelUnavailable):
-        agent_factory(model)("Find the refund policy")
-    assert model.complete.call_count == 1
+        run_agent(model, search_tool, "Which Python version?")
+
+    assert model.decide.call_count == 1
     search_tool.assert_not_called()
 
 
-def test_tool_failure_stops_before_another_model_turn(
-    llm_script, search_tool, agent_factory
-):
-    model = llm_script('{"action":"search_docs","value":"refund policy"}')
+def test_tool_failure_stops_before_another_model_turn(model_script, search_tool):
+    model = model_script(
+        Decision(action="search_docs", value="installation requirements")
+    )
     search_tool.side_effect = TimeoutError("search unavailable")
 
     with pytest.raises(TimeoutError):
-        agent_factory(model)("Find the refund policy")
-    assert model.complete.call_count == 1
-    search_tool.assert_called_once_with("refund policy")
+        run_agent(model, search_tool, "Which Python version?")
+
+    assert model.decide.call_count == 1
+    search_tool.assert_called_once_with("installation requirements")
 
 
-@pytest.mark.parametrize(
-    "instructions",
-    [INSTRUCTIONS, INSTRUCTIONS + " Keep the answer to one sentence."],
-    ids=["standard", "concise"],
-)
-@pytest.mark.parametrize(
-    "question", ["How do refunds work?", "Can I get my money back?"]
-)
-def test_prompt_variants_preserve_the_request_contract(
-    instructions, question, llm_script, search_tool, agent_factory
-):
-    model = llm_script('{"action":"answer","value":"See the refund policy."}')
-
-    result = agent_factory(model, instructions=instructions)(question)
-
-    assert result == "See the refund policy."
-    request = model.complete.call_args.kwargs
-    assert request["instructions"] == instructions
-    assert json.loads(request["prompt"]) == {"question": question, "observations": []}
-    search_tool.assert_not_called()
-
-
-def test_reusing_agent_does_not_leak_conversation(
-    llm_script, search_tool, agent_factory
-):
-    model = llm_script(
-        '{"action":"search_docs","value":"private draft"}',
-        '{"action":"answer","value":"First answer"}',
-        '{"action":"answer","value":"Second answer"}',
+def test_requests_do_not_share_search_results(model_script, search_tool):
+    model = model_script(
+        Decision(action="search_docs", value="private draft"),
+        Decision(action="answer", value="First answer"),
+        Decision(action="answer", value="Second answer"),
     )
     search_tool.return_value = "First request's search result"
-    ask = agent_factory(model)
 
-    assert ask("First question") == "First answer"
-    assert ask("Second question") == "Second answer"
-    last_prompt = json.loads(model.complete.call_args.kwargs["prompt"])
-    assert last_prompt == {"question": "Second question", "observations": []}
+    assert run_agent(model, search_tool, "First question") == "First answer"
+    assert run_agent(model, search_tool, "Second question") == "Second answer"
+
+    model.decide.assert_called_with(question="Second question", observations=())

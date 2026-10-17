@@ -16,7 +16,7 @@ Read the corresponding article for the explanation, then use its example to run 
 
 | Example | Topics | Article |
 | --- | --- | --- |
-| [Pytest fixtures and mocking for AI agents](pytest-llm-fixtures/) | Scripted models, OpenAI and Anthropic adapters, HTTP mocks, offline CI | [Read ↗](https://istranin.dev/blog/pytest-fixtures-mocking-llm-agents/) |
+| [Unit testing AI agents with pytest](pytest-llm-fixtures/) | Deterministic decisions, tool contracts, OpenAI and Anthropic adapters, offline CI | [Read ↗](https://istranin.dev/blog/pytest-fixtures-mocking-llm-agents/) |
 | [Your first pytest test](pytest-for-beginners-first-python-test/) | Given-When-Then, plain assertions, failure reports, boundaries | [Read ↗](https://istranin.dev/blog/pytest-for-beginners-first-python-test/) |
 | [Python unit testing best practices](python-unit-testing-best-practices-pytest/) | Behavior, parametrization, explicit fixtures, autospecced collaborators | [Read ↗](https://istranin.dev/blog/python-unit-testing-best-practices-pytest/) |
 | [GitHub Actions Python testing](github-actions-python-testing-pytest/) | Python matrix, coverage, JUnit reports, stable merge check | [Read ↗](https://istranin.dev/blog/github-actions-python-testing-pytest/) |
